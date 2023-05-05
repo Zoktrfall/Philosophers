@@ -1,6 +1,8 @@
 #include "philosophers.h"
 
-int main()
+int	main(int argc, char *argv[])
 {
-    printf("Start Philosophers\n");
+	if (correct_args(argc, argv))
+		return (printf("Invalid arguments entered\n"));
+	return (0);
 }
