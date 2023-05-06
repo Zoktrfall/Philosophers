@@ -36,7 +36,14 @@ int	check_number(char *str)
 	return (0);
 }
 
-int	correct_args(int argc, char **argv)
+int	fifth_arg(char *arg)
+{
+	if (arg == NULL)
+		return (-42);
+	return (ft_atoi(arg));
+}
+
+int	correct_args(int argc, char **argv, int mas[5])
 {
 	size_t		i;
 	long long	checker;
@@ -53,5 +60,9 @@ int	correct_args(int argc, char **argv)
 			return (1);
 		i++;
 	}
+	i = -1;
+	while (++i < 4)
+		mas[i] = ft_atoi(argv[i + 1]);
+	mas[i] = fifth_arg(argv[5]);
 	return (0);
 }
