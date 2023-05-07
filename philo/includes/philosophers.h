@@ -15,8 +15,8 @@ typedef struct s_philo_data {
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				optional_argument;
-	pthread_mutex_t	fork_right;
-	pthread_mutex_t	fork_left;
+	pthread_mutex_t	*fork_right;
+	pthread_mutex_t	*fork_left;
 	int				time_pilo;
 }	t_philo_data;
 
@@ -26,10 +26,18 @@ int			check_number(char *str);
 int			fifth_arg(char *arg);
 long long	ft_atoi(const char *str);
 
+//	Init Philosophers
+int			init_pilo(t_philo_data ***philo, int mas[5]);
+int			init_mutex(t_philo_data ***philo, \
+				pthread_mutex_t ***mutex, int count);
+
 //  Utils
 void		*ft_calloc(size_t num, size_t size);
 
 //	Free Functions
-int 		free_pilo(t_philo_data ***philo, int mas[5]);
+void		free_philo(t_philo_data ***philo, int count);
+void		free_mutex(pthread_mutex_t ***mutex, int count);
+int			del_philosophers(t_philo_data ***philo, \
+				pthread_mutex_t ***mutex, int mas[5], int end_program);
 
 #endif

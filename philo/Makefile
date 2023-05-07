@@ -1,51 +1,52 @@
+# Main Variables
 NAME = philo
-FLAGS = -Wall -Wextra -Werror
-LIBS   = -I./includes/
+FLAGS = -Wall -Wextra -Werror #-g -fsanitize=thread
+LIBS = -I./includes/
+CC = cc
+RM = rm -rf
 PHILOSOPHERS = ./includes/philosophers.h
 
-# Compiled directories
-SRC = src
-OBJ = obj
-SUBDIRS = philosophers
-
-# Folder directions
-SRC_DIR = $(foreach dir, $(SUBDIRS), $(addprefix $(SRC)/, $(dir)))
-OBJ_DIR = $(foreach dir, $(SUBDIRS), $(addprefix $(OBJ)/, $(dir)))
-
-# File directions
-SRCS = $(foreach dir, $(SRC_DIR), $(wildcard $(dir)/*.c))
-OBJS = $(subst $(SRC), $(OBJ), $(SRCS:.c=.o))
+# Directories
+SRC_DIR = src
+OBJ_DIR = obj
+SRCS = ${wildcard ${SRC_DIR}/*.c}
+OBJS = ${patsubst ${SRC_DIR}/%.c,${OBJ_DIR}/%.o,${SRCS}}
 
 # Colors
 RESET = \033[0m
 RED   = \033[31m
 GREEN = \033[32m
+YELLOW = \033[33m
 
-all : $(NAME)
-bonus : all
+all : ${NAME}
 
-$(NAME) : Makefile $(OBJS) $(PIPEX) $(GNL)
-	@gcc $(FLAGS) $(INCLUDE) $(OBJS) -o $(NAME)
+${NAME} : Makefile ${OBJS} ${PHILOSOPHERS}
+	@${CC} ${FLAGS} ${OBJS} -o ${NAME}
 	@make DONE_MSG
 
-$(OBJ)/%.o : $(SRC)/%.c
-	@mkdir -p $(OBJ) $(OBJ_DIR)
-	@gcc $(CFLAGS) $(LIBS) -c $< -o $@
+${OBJ_DIR} :
+	@mkdir -p ${OBJ_DIR}
+
+${OBJ_DIR}/%.o : ${SRC_DIR}/%.c | ${OBJ_DIR}
+	@make CREATE_OBJECT_FILES
+	@${CC} ${CFLAGS} ${LIBS} -c $< -o $@
 
 clean : DELETE_OBJ_MSG
-	@rm -rf $(OBJ)
+	@${RM} ${OBJ_DIR}
 
 fclean : clean DELETE_PROGRAM_MSG
-	@rm -rf $(NAME)
+	@${RM} ${NAME}
 
 re : fclean all
 
-.PHONY : all bonus clean fclean re
+.PHONY : all clean fclean re
 
 # Helper messages
-DONE_MSG:
+DONE_MSG :
 	@echo "${GREEN}Philosophers Ready To Go!${RESET}"
-DELETE_OBJ_MSG:
+DELETE_OBJ_MSG :
 	@echo "${RED}Object Files Deleting..${RESET}"
-DELETE_PROGRAM_MSG:
+CREATE_OBJECT_FILES :
+	@echo "${YELLOW}Create Obj Files..${RESET}"
+DELETE_PROGRAM_MSG :
 	@echo "${RED}Remove Philosophers..${RESET}"
