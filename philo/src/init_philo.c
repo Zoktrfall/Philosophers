@@ -25,6 +25,29 @@ int	init_pilo(t_philo_data ***philo, int mas[5])
 	return (0);
 }
 
+int	init_threads(t_philo_data ***philo, int count)
+{
+	int			i;
+	pthread_t	**threads;
+
+	i = -1;
+	threads = (pthread_t **)ft_calloc(count, sizeof(pthread_t *));
+	if (threads == NULL)
+		return (1);
+	while (++i < count)
+	{
+		threads[i] = (pthread_t *)ft_calloc(1, sizeof(pthread_t));
+		if (threads[i] == NULL)
+		{
+			free(threads);
+			return (1);
+		}
+		(*philo)[i]->thread_philo = threads[i];
+	}
+	free(threads);
+	return (0);
+}
+
 int	init_mutex(t_philo_data ***philo, pthread_mutex_t ***mutex, int count)
 {
 	int				i;
@@ -50,5 +73,5 @@ int	init_mutex(t_philo_data ***philo, pthread_mutex_t ***mutex, int count)
 			(*philo)[i]->fork_left = (*mutex)[i - 1];
 		(*philo)[i]->fork_right = (*mutex)[i];
 	}
-	return (0);
+	return (init_threads(philo, count));
 }

@@ -11,6 +11,7 @@ void	free_philo(t_philo_data ***philo, int count)
 	{
 		if ((*philo)[i] == NULL)
 			break ;
+		free((*philo)[i]->thread_philo);
 		free((*philo)[i]);
 	}
 	free(*philo);
@@ -34,14 +35,15 @@ void	free_mutex(pthread_mutex_t ***mutex, int count)
 }
 
 int	del_philosophers(t_philo_data ***philo, \
-	pthread_mutex_t ***mutex, int mas[5], int end_program)
+	pthread_mutex_t ***mutex, int mas_0, int end_program)
 {
-	free_philo(philo, mas[0]);
-	free_mutex(mutex, mas[0]);
-	if (end_program == 0)
-	{
-		printf("Malloc error\n");
-		return (1);
-	}
+	free_philo(philo, mas_0);
+	free_mutex(mutex, mas_0);
+	if (end_program == MALLOC_ERROR)
+		return (printf(PRINT_MALLOC_ERROR));
+	if (end_program == THREAD_ERROR)
+		return (printf(PRINT_THREAD_ERROR));
+	if (end_program == JOIN_ERROR)
+		return (printf(PRINT_JOIN_ERROR));
 	return (0);
 }
