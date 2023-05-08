@@ -26,7 +26,10 @@ typedef struct s_philo_data {
 	int				optional_argument;
 	pthread_mutex_t	*fork_right;
 	pthread_mutex_t	*fork_left;
-	int				time_pilo;
+	long long		time_philo;
+	int				*ptr_philo_die;
+	pthread_mutex_t	*print_mutex;
+	pthread_mutex_t	*philo_die_mutex;
 }	t_philo_data;
 
 //  Correct Args
@@ -38,6 +41,7 @@ long long	ft_atoi(const char *str);
 //	Init Philosophers
 int			init_threads(t_philo_data ***philo, int count);
 int			init_pilo(t_philo_data ***philo, int mas[5]);
+int			init_options(t_philo_data ***philo, int count);
 int			init_mutex(t_philo_data ***philo, \
 				pthread_mutex_t ***mutex, int count);
 
@@ -47,6 +51,8 @@ void		*ft_calloc(size_t num, size_t size);
 //	Free Functions
 void		free_philo(t_philo_data ***philo, int count);
 void		free_mutex(pthread_mutex_t ***mutex, int count);
+int			free_global(t_philo_data ***philo, \
+				pthread_mutex_t *str, pthread_mutex_t *ptr);
 int			del_philosophers(t_philo_data ***philo, \
 				pthread_mutex_t ***mutex, int mas_0, int end_program);
 

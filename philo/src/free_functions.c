@@ -47,3 +47,25 @@ int	del_philosophers(t_philo_data ***philo, \
 		return (printf(PRINT_JOIN_ERROR));
 	return (0);
 }
+
+int	free_global(t_philo_data ***philo, \
+	pthread_mutex_t *str, pthread_mutex_t *ptr)
+{
+	if (philo == NULL)
+	{
+		if (str != NULL)
+			pthread_mutex_destroy(str);
+		if (ptr != NULL)
+			pthread_mutex_destroy(ptr);
+		free(str);
+		free(ptr);
+		return (1);
+	}
+	if ((*philo)[0]->philo_die_mutex != NULL)
+		pthread_mutex_destroy((*philo)[0]->philo_die_mutex);
+	if ((*philo)[0]->print_mutex != NULL)
+		pthread_mutex_destroy((*philo)[0]->print_mutex);
+	free((*philo)[0]->philo_die_mutex);
+	free((*philo)[0]->print_mutex);
+	return (1);
+}

@@ -15,12 +15,13 @@ int	init_pilo(t_philo_data ***philo, int mas[5])
 			return (1);
 		(*philo)[i]->philosophers = mas[0];
 		(*philo)[i]->index_philosophers = i + 1;
-		(*philo)[i]->time_to_die = mas[1];
-		(*philo)[i]->time_to_eat = mas[2];
-		(*philo)[i]->time_to_sleep = mas[3];
+		(*philo)[i]->time_to_die = mas[1] * 1000;
+		(*philo)[i]->time_to_eat = mas[2] * 1000;
+		(*philo)[i]->time_to_sleep = mas[3] * 1000;
 		(*philo)[i]->optional_argument = mas[4];
 		(*philo)[i]->fork_left = NULL;
 		(*philo)[i]->fork_right = NULL;
+		(*philo)[i]->time_philo = 0;
 	}
 	return (0);
 }
@@ -74,4 +75,28 @@ int	init_mutex(t_philo_data ***philo, pthread_mutex_t ***mutex, int count)
 		(*philo)[i]->fork_right = (*mutex)[i];
 	}
 	return (init_threads(philo, count));
+}
+
+int	init_options(t_philo_data ***philo, int count)
+{
+	int				i;
+	int				philo_die;
+	pthread_mutex_t	*print_m;
+	pthread_mutex_t	*die_m;
+
+	i = -1;
+	philo_die = 0;
+	print_m = NULL;
+	die_m = NULL;
+	print_m = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+	die_m = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+	if (print_m == NULL || die_m == NULL
+		|| pthread_mutex_init(print_m, NULL) || pthread_mutex_init(die_m, NULL))
+		return (free_global(NULL, print_m, die_m));
+	while (++i < count)
+	{
+		(*philo)[i]->print_mutex = print_m;
+		(*philo)[i]->philo_die_mutex = die_m;
+	}
+	return (0);
 }
