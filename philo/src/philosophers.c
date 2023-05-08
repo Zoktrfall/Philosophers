@@ -4,12 +4,16 @@ pthread_mutex_t print;
 
 void	*thread_philo(void	*philo_arg)
 {
+	int opr = 1;
 	t_philo_data *philo = (t_philo_data*)philo_arg;
 	if (philo->index_philosophers % 2 == 0)
 		usleep(1000);
 	// pthread_mutex_lock(philo->fork_left);
 	// pthread_mutex_lock(philo->fork_right);
 	// pthread_mutex_init(&print, NULL);
+
+	while (1)
+	{
 	pthread_mutex_lock(&print);
 	printf("philo[%d]->thread_philo= %d\n", philo->index_philosophers, philo->thread_philo);
 	printf("philo[%d]->philosophers = %d\n", philo->index_philosophers, philo->philosophers);
@@ -24,7 +28,9 @@ void	*thread_philo(void	*philo_arg)
 	printf("philo[%d]->ptr_philo_die = %d\n", philo->index_philosophers, philo->ptr_philo_die);
 	printf("philo[%d]->print_mutex = %d\n", philo->index_philosophers, philo->print_mutex);
 	printf("philo[%d]->philo_die_mutex = %d\n", philo->index_philosophers, philo->philo_die_mutex);
+	printf("\n");
 	pthread_mutex_unlock(&print);
+	}
 	// pthread_mutex_unlock(philo->fork_right);
 	// pthread_mutex_unlock(philo->fork_left);
 }
@@ -32,6 +38,10 @@ void	*thread_philo(void	*philo_arg)
 int	respected_philosophers(t_philo_data ***philo, pthread_mutex_t ***mutex, int count)
 {
 	int i;
+	int *flag_die = malloc(sizeof(int));
+	*flag_die = 0;
+	for(int j = 0; j < count; j++)
+		(*philo)[j]->ptr_philo_die = flag_die;
 	if (init_options(philo, count))
 		return (del_philosophers(philo, mutex, count, MALLOC_ERROR));
 	i = -1;
@@ -41,19 +51,21 @@ int	respected_philosophers(t_philo_data ***philo, pthread_mutex_t ***mutex, int 
 			thread_philo, (*philo)[i]))
 			return (del_philosophers(philo, mutex, count, THREAD_ERROR));
 	}
-	i = -1;
-	// while (1)
-	// {
-		// if ((*philo)[0]->ptr_philo_die == 1)
-		// {
-			while (++i < count)
-			{
+	while (1)
+	{
+		i = -1;
+		while (i < count)
+		{
+			if (*flag_die == 1)
+			{			
 				if (pthread_join(*(*philo)[i]->thread_philo, NULL))
 					return (del_philosophers(philo, mutex, count, THREAD_ERROR));
 			}
-			free_global(philo, NULL, NULL);
-	// 	}
-	// }
+			i++;
+		}
+	}
+	free_global(philo, NULL, NULL);
+	system("leaks philo");
 	return (0);
 }
 
@@ -74,11 +86,13 @@ int	main(int argc, char *argv[])
 	// long long time = oper.tv_sec * 1000 + oper.tv_usec / 1000;
 	// printf("time = %lld\n", time / 1000);
 	// sleep(1);
-	// gettimeofday(&oper, NULL);
-	// printf("time = %lld\n", (oper.tv_sec * 1000 + oper.tv_usec / 1000 - time) / 1000);
+	// 		gettimeofday(&oper, NULL);
+	// printf("time = %lld\n", (oper.tv_sec * 1000 + oper.tv_usec / 1000 - time) / 1000);;
 	// sleep(2);
+	// 			gettimeofday(&oper, NULL);
 	// printf("time = %lld\n", (oper.tv_sec * 1000 + oper.tv_usec / 1000 - time) / 1000);
 	// sleep(3);
+	// 			gettimeofday(&oper, NULL);
 	// printf("time = %lld\n", (oper.tv_sec * 1000 + oper.tv_usec / 1000 - time) / 1000);
 	// for(int i = 0; i < mas[0]; i++)
 	// {
