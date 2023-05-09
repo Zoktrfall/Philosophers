@@ -4,35 +4,35 @@ pthread_mutex_t print;
 
 void	*thread_philo(void	*philo_arg)
 {
-	int opr = 1;
-	t_philo_data *philo = (t_philo_data*)philo_arg;
-	if (philo->index_philosophers % 2 == 0)
-		usleep(1000);
-	// pthread_mutex_lock(philo->fork_left);
-	// pthread_mutex_lock(philo->fork_right);
-	// pthread_mutex_init(&print, NULL);
+	t_philo_data *philo;
 
+	philo = (t_philo_data *)philo_arg;
+	if (philo->index_philosophers %  2 == 0)
+		usleep(1000);
 	while (1)
 	{
-	pthread_mutex_lock(&print);
-	printf("philo[%d]->thread_philo= %d\n", philo->index_philosophers, philo->thread_philo);
-	printf("philo[%d]->philosophers = %d\n", philo->index_philosophers, philo->philosophers);
-	printf("philo[%d]->index_philosophers = %d\n", philo->index_philosophers, philo->index_philosophers);
-	printf("philo[%d]->time_to_die = %d\n", philo->index_philosophers, philo->time_to_die);
-	printf("philo[%d]->time_to_eat = %d\n", philo->index_philosophers, philo->time_to_eat);
-	printf("philo[%d]->time_to_sleep = %d\n", philo->index_philosophers, philo->time_to_sleep);
-	printf("philo[%d]->optional_argument = %d\n", philo->index_philosophers, philo->optional_argument);
-	printf("philo[%d]->fork_left = %d\n", philo->index_philosophers, philo->fork_left);
-	printf("philo[%d]->fork_right = %d\n", philo->index_philosophers, philo->fork_right);
-	printf("philo[%d]->time_philo = %lld\n", philo->index_philosophers, philo->time_philo);
-	printf("philo[%d]->ptr_philo_die = %d\n", philo->index_philosophers, philo->ptr_philo_die);
-	printf("philo[%d]->print_mutex = %d\n", philo->index_philosophers, philo->print_mutex);
-	printf("philo[%d]->philo_die_mutex = %d\n", philo->index_philosophers, philo->philo_die_mutex);
-	printf("\n");
-	pthread_mutex_unlock(&print);
+		pthread_mutex_lock(philo->fork_left);
+		pthread_mutex_lock(philo->print_mutex);
+		printf("%lld %d  has taken a fork\n", (retrun_time() - philo->start_program_time), philo->index_philosophers);
+		pthread_mutex_unlock(philo->print_mutex);
+		pthread_mutex_lock(philo->fork_right);
+		pthread_mutex_lock(philo->print_mutex);
+		printf("%lld %d  has taken a fork\n", (retrun_time() - philo->start_program_time), philo->index_philosophers);
+		pthread_mutex_unlock(philo->print_mutex);
+		pthread_mutex_lock(philo->print_mutex);
+		printf("%lld %d  is eating\n", (retrun_time() - philo->start_program_time), philo->index_philosophers);
+		usleep(philo->time_to_eat);
+		pthread_mutex_unlock(philo->print_mutex);
+		pthread_mutex_unlock(philo->fork_right);
+		pthread_mutex_unlock(philo->fork_left);
+		pthread_mutex_lock(philo->print_mutex);
+		printf("%lld %d is sleeping\n", (retrun_time() - philo->start_program_time), philo->index_philosophers);
+		pthread_mutex_unlock(philo->print_mutex);
+		usleep(philo->time_to_sleep);
+		pthread_mutex_lock(philo->print_mutex);
+		printf("%lld %d is thinking\n", (retrun_time() - philo->start_program_time), philo->index_philosophers);
+		pthread_mutex_unlock(philo->print_mutex);
 	}
-	// pthread_mutex_unlock(philo->fork_right);
-	// pthread_mutex_unlock(philo->fork_left);
 }
 
 int	respected_philosophers(t_philo_data ***philo, pthread_mutex_t ***mutex, int count)
