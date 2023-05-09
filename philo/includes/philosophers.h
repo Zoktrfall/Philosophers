@@ -27,6 +27,7 @@ typedef struct s_philo_data {
 	pthread_mutex_t	*fork_right;
 	pthread_mutex_t	*fork_left;
 	long long		time_philo;
+	long long		start_program_time;
 	int				*ptr_philo_die;
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	*philo_die_mutex;
@@ -47,6 +48,7 @@ int			init_mutex(t_philo_data ***philo, \
 
 //  Utils
 void		*ft_calloc(size_t num, size_t size);
+long long	retrun_time(void);
 
 //	Free Functions
 void		free_philo(t_philo_data ***philo, int count);

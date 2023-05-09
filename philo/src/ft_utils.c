@@ -20,3 +20,13 @@ void	*ft_calloc(size_t num, size_t size)
 	}
 	return (NULL);
 }
+
+long long	retrun_time(void)
+{
+	struct timeval	time;
+	long long 		start_program;
+
+	gettimeofday(&time, NULL);
+	start_program = time.tv_sec * 1000 + time.tv_usec / 1000;
+	return (start_program);
+}

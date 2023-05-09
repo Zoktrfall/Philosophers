@@ -24,7 +24,7 @@ void	*thread_philo(void	*philo_arg)
 	printf("philo[%d]->optional_argument = %d\n", philo->index_philosophers, philo->optional_argument);
 	printf("philo[%d]->fork_left = %d\n", philo->index_philosophers, philo->fork_left);
 	printf("philo[%d]->fork_right = %d\n", philo->index_philosophers, philo->fork_right);
-	printf("philo[%d]->time_philo = %d\n", philo->index_philosophers, philo->time_philo);
+	printf("philo[%d]->time_philo = %lld\n", philo->index_philosophers, philo->time_philo);
 	printf("philo[%d]->ptr_philo_die = %d\n", philo->index_philosophers, philo->ptr_philo_die);
 	printf("philo[%d]->print_mutex = %d\n", philo->index_philosophers, philo->print_mutex);
 	printf("philo[%d]->philo_die_mutex = %d\n", philo->index_philosophers, philo->philo_die_mutex);
@@ -85,17 +85,16 @@ int	main(int argc, char *argv[])
 	// gettimeofday(&oper, NULL);
 	// long long time = oper.tv_sec * 1000 + oper.tv_usec / 1000;
 	// printf("time = %lld\n", time / 1000);
+	// long long time = retrun_time();
 	// sleep(1);
-	// 		gettimeofday(&oper, NULL);
-	// printf("time = %lld\n", (oper.tv_sec * 1000 + oper.tv_usec / 1000 - time) / 1000);;
+	// printf("time = %lld\n", (retrun_time() - time) / 1000);
 	// sleep(2);
-	// 			gettimeofday(&oper, NULL);
-	// printf("time = %lld\n", (oper.tv_sec * 1000 + oper.tv_usec / 1000 - time) / 1000);
+	// printf("time = %lld\n", (retrun_time() - time) / 1000);
 	// sleep(3);
-	// 			gettimeofday(&oper, NULL);
-	// printf("time = %lld\n", (oper.tv_sec * 1000 + oper.tv_usec / 1000 - time) / 1000);
+	// printf("time = %lld\n", (retrun_time() - time) / 1000);
 	// for(int i = 0; i < mas[0]; i++)
 	// {
+	// 	sleep(1);
 	// 	if (philo[i] == NULL)
 	// 		return printf("exav\n");
 	// 	printf("philo[%d]->philo_die_mutex= %d\n", i, philo[i]->philo_die_mutex);
@@ -110,6 +109,7 @@ int	main(int argc, char *argv[])
 	// 	printf("philo[%d]->optional_argument = %d\n", i, philo[i]->optional_argument);
 	// 	printf("philo[%d]->fork_left = %d\n", i, philo[i]->fork_left);
 	// 	printf("philo[%d]->fork_right = %d\n", i, philo[i]->fork_right);
+	// 	printf("philo[%d]->start_program_time = %lld\n", i, (retrun_time() - philo[i]->start_program_time) / 1000);
 	// 	printf("\n");
 	// }
 	del_philosophers(&philo, &mutex, mas[0], FINISH_PROGRAM);

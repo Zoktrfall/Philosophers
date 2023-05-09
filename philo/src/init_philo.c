@@ -22,6 +22,7 @@ int	init_pilo(t_philo_data ***philo, int mas[5])
 		(*philo)[i]->fork_left = NULL;
 		(*philo)[i]->fork_right = NULL;
 		(*philo)[i]->time_philo = 0;
+		(*philo)[i]->start_program_time = retrun_time();
 	}
 	return (0);
 }
