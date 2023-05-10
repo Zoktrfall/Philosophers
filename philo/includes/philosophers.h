@@ -20,9 +20,9 @@ typedef struct s_philo_data {
 	pthread_t		*thread_philo;
 	int				philosophers;
 	int				index_philosophers;
-	int				time_to_die;
-	int				time_to_eat;
-	int				time_to_sleep;
+	long long		time_to_die;
+	long long		time_to_eat;
+	long long		time_to_sleep;
 	int				optional_argument;
 	pthread_mutex_t	*fork_right;
 	pthread_mutex_t	*fork_left;
@@ -31,6 +31,7 @@ typedef struct s_philo_data {
 	int				*ptr_philo_die;
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	*philo_die_mutex;
+	pthread_mutex_t	*time_philo_mutex;
 }	t_philo_data;
 
 //  Correct Args
@@ -42,7 +43,7 @@ long long	ft_atoi(const char *str);
 //	Init Philosophers
 int			init_threads(t_philo_data ***philo, int count);
 int			init_pilo(t_philo_data ***philo, int mas[5]);
-int			init_options(t_philo_data ***philo, int count);
+int			init_options(t_philo_data ***philo, int count, int i);
 int			init_mutex(t_philo_data ***philo, \
 				pthread_mutex_t ***mutex, int count);
 

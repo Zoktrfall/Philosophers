@@ -11,6 +11,10 @@ void	*thread_philo(void	*philo_arg)
 		usleep(1000);
 	while (1)
 	{
+		pthread_mutex_lock(philo->philo_die_mutex);
+		if (*(philo->ptr_philo_die))
+			return NULL;
+		pthread_mutex_unlock(philo->philo_die_mutex);
 		pthread_mutex_lock(philo->fork_left);
 		pthread_mutex_lock(philo->print_mutex);
 		printf("%lld %d  has taken a fork\n", (retrun_time() - philo->start_program_time), philo->index_philosophers);
@@ -22,6 +26,9 @@ void	*thread_philo(void	*philo_arg)
 		pthread_mutex_lock(philo->print_mutex);
 		printf("%lld %d  is eating\n", (retrun_time() - philo->start_program_time), philo->index_philosophers);
 		usleep(philo->time_to_eat);
+		pthread_mutex_lock(philo->time_philo_mutex);
+		philo->time_philo = retrun_time();
+		pthread_mutex_unlock(philo->time_philo_mutex);
 		pthread_mutex_unlock(philo->print_mutex);
 		pthread_mutex_unlock(philo->fork_right);
 		pthread_mutex_unlock(philo->fork_left);
@@ -35,6 +42,17 @@ void	*thread_philo(void	*philo_arg)
 	}
 }
 
+int	death_check(long long time_to_eat, long long time_to_die, int **flag_die)
+{
+	if ((retrun_time() - time_to_eat) * 1000 > time_to_die)
+	{
+		write(1, "11\n", 4);
+		**flag_die = 1;
+		return (1);
+	}
+	return (0);
+}
+
 int	respected_philosophers(t_philo_data ***philo, pthread_mutex_t ***mutex, int count)
 {
 	int i;
@@ -42,7 +60,7 @@ int	respected_philosophers(t_philo_data ***philo, pthread_mutex_t ***mutex, int 
 	*flag_die = 0;
 	for(int j = 0; j < count; j++)
 		(*philo)[j]->ptr_philo_die = flag_die;
-	if (init_options(philo, count))
+	if (init_options(philo, count, -1))
 		return (del_philosophers(philo, mutex, count, MALLOC_ERROR));
 	i = -1;
 	while (++i < count)
@@ -54,18 +72,18 @@ int	respected_philosophers(t_philo_data ***philo, pthread_mutex_t ***mutex, int 
 	while (1)
 	{
 		i = -1;
-		while (i < count)
+		while (++i < count)
 		{
-			if (*flag_die == 1)
+			if (death_check((*philo)[i]->time_philo, (*philo)[i]->time_to_die, &flag_die))
 			{			
+				printf("%lld %d died\n", (retrun_time() - (*philo)[i]->start_program_time), (*philo)[i]->index_philosophers);
 				if (pthread_join(*(*philo)[i]->thread_philo, NULL))
 					return (del_philosophers(philo, mutex, count, THREAD_ERROR));
 			}
-			i++;
 		}
 	}
 	free_global(philo, NULL, NULL);
-	system("leaks philo");
+	// system("leaks philo");
 	return (0);
 }
 
@@ -79,8 +97,27 @@ int	main(int argc, char *argv[])
 		return (printf("Invalid arguments entered\n"));
 	if (init_pilo(&philo, mas) || init_mutex(&philo, &mutex, mas[0]))
 		return (del_philosophers(&philo, &mutex, mas[0], MALLOC_ERROR));
+	// int *flag_die = malloc(sizeof(int));
+	// *flag_die = 0;
+	// for(int j = 0; j < mas[0]; j++)
+	// {
+	// 	philo[j]->ptr_philo_die = *flag_die;
+	// 	printf("%d\n", philo[j]->ptr_philo_die);
+	// }
+	// death_check(0, 0, &flag_die);
+	// for(int j = 0; j < mas[0]; j++)
+	// {
+	// 	philo[j]->ptr_philo_die = *flag_die;
+	// 	printf("%d\n", philo[j]->ptr_philo_die);
+	// }
 	if (respected_philosophers(&philo, &mutex, mas[0]))
 		return (1);
+	// printf("time_to_eat = %lld\n", philo[0]->time_philo);
+	// printf("time_to_die = %lld\n", philo[0]->time_to_die);
+	// sleep(5);
+	// printf("time = %lld\n", (retrun_time() - philo[0]->time_philo) * 1000);
+	// if ((retrun_time() - philo[0]->time_philo) * 1000 > philo[0]->time_to_die)
+	// 	printf("die\n");
 	// struct timeval oper;
 	// gettimeofday(&oper, NULL);
 	// long long time = oper.tv_sec * 1000 + oper.tv_usec / 1000;
