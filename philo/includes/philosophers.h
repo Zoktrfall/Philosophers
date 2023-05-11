@@ -42,14 +42,14 @@ long long	ft_atoi(const char *str);
 
 //	Init Philosophers
 int			init_threads(t_philo_data ***philo, int count);
-int			init_pilo(t_philo_data ***philo, int mas[5]);
+int			init_pilo(t_philo_data ***philo, int mas[5], int i);
 int			init_options(t_philo_data ***philo, int count, int i);
 int			init_mutex(t_philo_data ***philo, \
 				pthread_mutex_t ***mutex, int count);
 
 //  Utils
 void		*ft_calloc(size_t num, size_t size);
-long long	retrun_time(void);
+long long	return_time(void);
 
 //	Free Functions
 void		free_philo(t_philo_data ***philo, int count);
