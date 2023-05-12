@@ -15,12 +15,14 @@ void	*thread_philo(void	*philo_arg)
 		pthread_mutex_lock(philo->print_mutex);
 		printf("%lld %d has taken a fork\n", (return_time() - philo->start_program_time), philo->index_philosophers);
 		pthread_mutex_unlock(philo->print_mutex);
+		if (philo->philosophers == 1)
+			return (NULL);
 		pthread_mutex_lock(philo->fork_right);
 		pthread_mutex_lock(philo->print_mutex);
 		printf("%lld %d has taken a fork\n", (return_time() - philo->start_program_time), philo->index_philosophers);
 		pthread_mutex_unlock(philo->print_mutex);
 		pthread_mutex_lock(philo->time_philo_mutex);
-		philo->time_philo = return_time() - philo->start_program_time + 10;
+		philo->time_philo = return_time() - philo->start_program_time;
 		pthread_mutex_unlock(philo->time_philo_mutex);
 		pthread_mutex_lock(philo->print_mutex);
 		printf("%lld %d is eating\n", (return_time() - philo->start_program_time), philo->index_philosophers);
@@ -80,8 +82,9 @@ int	respected_philosophers(t_philo_data ***philo, pthread_mutex_t ***mutex, int 
 		if (*flag_die)
 			break ;
 	}
-	// sleep(2);
+	usleep(10000);
 	printf("%lld %d died\n", (return_time() - (*philo)[i]->start_program_time), (*philo)[i]->index_philosophers);
+	i = -1;
 	while (++i < count)
 	{
 		if (pthread_join(*(*philo)[i]->thread_philo, NULL))
@@ -105,7 +108,6 @@ int	main(int argc, char *argv[])
 		return (del_philosophers(&philo, &mutex, mas[0], MALLOC_ERROR));
 	if (respected_philosophers(&philo, &mutex, mas[0]))
 		return (1);
-	del_philosophers(&philo, &mutex, mas[0], FINISH_PROGRAM);
 	// system("leaks philo");
 	return (0);
 }
