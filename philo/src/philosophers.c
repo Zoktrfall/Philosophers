@@ -1,72 +1,16 @@
 #include "philosophers.h"
 
-// #define	LAST 11
-// #define FIRST 12
-
-// void	get_fork(t_philo_data *philo, int flag)
-// {
-// 	if (flag == FIRST)
-// 	{
-// 		pthread_mutex_lock(philo->fork_left);
-// 		pthread_mutex_lock(philo->print_mutex);
-// 		printf("%lld %d has taken a fork\n", (return_time() - philo->start_program_time), philo->index_philosophers);
-// 		pthread_mutex_unlock(philo->print_mutex);
-// 		pthread_mutex_lock(philo->fork_right);
-// 		pthread_mutex_lock(philo->print_mutex);
-// 		printf("%lld %d has taken a fork\n", (return_time() - philo->start_program_time), philo->index_philosophers);
-// 		pthread_mutex_unlock(philo->print_mutex);
-// 	}
-// 	else
-// 	{
-// 		pthread_mutex_lock(philo->fork_right);
-// 		pthread_mutex_lock(philo->print_mutex);
-// 		printf("%lld %d has taken a fork\n", (return_time() - philo->start_program_time), philo->index_philosophers);
-// 		pthread_mutex_unlock(philo->print_mutex);
-// 		pthread_mutex_lock(philo->fork_left);
-// 		pthread_mutex_lock(philo->print_mutex);
-// 		printf("%lld %d has taken a fork\n", (return_time() - philo->start_program_time), philo->index_philosophers);
-// 		pthread_mutex_unlock(philo->print_mutex);
-// 	}
-// }
-
 pthread_mutex_t operacion;
-
-int	death_check(t_philo_data *philo, int **flag_die)
-{
-	pthread_mutex_lock(philo->philo_die_mutex);
-	if ((return_time() - philo->start_program_time - philo->time_philo) > philo->time_to_die)
-	{
-		**flag_die = 1;
-		pthread_mutex_unlock(philo->philo_die_mutex);
-		return (1);
-	}
-	pthread_mutex_unlock(philo->philo_die_mutex);
-	return (0);
-}
-
-void	check_end(int count, t_philo_data ***philo, int *flag_die)
-{
-	int	i;
-
-	while (1)
-	{
-		i = -1;
-		while (++i < count)
-			if (death_check((*philo)[i], &flag_die))
-				break ;
-		if (*flag_die)
-			break ;
-	}
-}
+pthread_mutex_t	plus;
 
 void	*thread_philo(void	*philo_arg)
 {
-	t_philo_data *philo;
+	t_philo_data	*philo;
 
 	philo = (t_philo_data *)philo_arg;
 	if (philo->index_philosophers %  2 == 0)
 		usleep(1000);
-	while (1)
+	while (philo->eat_count != philo->optional_argument)
 	{
 		pthread_mutex_lock(&operacion);
 		if (*(philo->ptr_philo_die))
@@ -77,31 +21,41 @@ void	*thread_philo(void	*philo_arg)
 		pthread_mutex_unlock(&operacion);
 		pthread_mutex_lock(philo->fork_left);
 		pthread_mutex_lock(philo->print_mutex);
-		printf("%lld %d has taken a fork\n", (return_time() - philo->start_program_time), philo->index_philosophers);
+		printf(PHILO_FORK, (return_time() - philo->start_program_time), philo->index_philosophers);
 		pthread_mutex_unlock(philo->print_mutex);
-		if (philo->philosophers == 1)
+		pthread_mutex_lock(&operacion);
+		if (*(philo->ptr_philo_die) || philo->philosophers == 1)
+		{
+			pthread_mutex_unlock(&operacion);
 			return NULL;
+		}
+		pthread_mutex_unlock(&operacion);
 		pthread_mutex_lock(philo->fork_right);
 		pthread_mutex_lock(philo->print_mutex);
-		printf("%lld %d has taken a fork\n", (return_time() - philo->start_program_time), philo->index_philosophers);
+		printf(PHILO_FORK, (return_time() - philo->start_program_time), philo->index_philosophers);
 		pthread_mutex_unlock(philo->print_mutex);
 		pthread_mutex_lock(philo->time_philo_mutex);
 		philo->time_philo = return_time() - philo->start_program_time + philo->time_philo;
 		pthread_mutex_unlock(philo->time_philo_mutex);
 		pthread_mutex_lock(philo->print_mutex);
-		printf("%lld %d is eating\n", (return_time() - philo->start_program_time), philo->index_philosophers);
+		printf(PHILO_EAT, (return_time() - philo->start_program_time), philo->index_philosophers);
+		pthread_mutex_lock(&plus);
+		if (philo->optional_argument >= 0)
+			philo->eat_count++;
+		pthread_mutex_unlock(&plus);
 		pthread_mutex_unlock(philo->print_mutex);
 		ft_usleep(philo->time_to_eat);
 		pthread_mutex_unlock(philo->fork_right);
 		pthread_mutex_unlock(philo->fork_left);
 		pthread_mutex_lock(philo->print_mutex);
-		printf("%lld %d is sleeping\n", (return_time() - philo->start_program_time), philo->index_philosophers);
+		printf(PHILO_SLEEP, (return_time() - philo->start_program_time), philo->index_philosophers);
 		pthread_mutex_unlock(philo->print_mutex);
 		ft_usleep(philo->time_to_sleep);
 		pthread_mutex_lock(philo->print_mutex);
-		printf("%lld %d is thinking\n", (return_time() - philo->start_program_time), philo->index_philosophers);
+		printf(PHILO_THINK, (return_time() - philo->start_program_time), philo->index_philosophers);
 		pthread_mutex_unlock(philo->print_mutex);
 	}
+	return NULL;
 }
 
 int	respected_philosophers(t_philo_data ***philo, pthread_mutex_t ***mutex, int count)
@@ -120,18 +74,7 @@ int	respected_philosophers(t_philo_data ***philo, pthread_mutex_t ***mutex, int 
 			thread_philo, (*philo)[i]))
 			return (del_philosophers(philo, mutex, count, THREAD_ERROR));
 	}
-	while (1)
-	{
-		i = -1;
-		while (++i < count)
-			if (death_check((*philo)[i], &flag_die))
-				break ;
-		if (*flag_die)
-			break ;
-	}
-	// check_end(count, philo, flag_die);
-	// usleep(10000);
-	printf("%lld %d 		died111111111111111111\n", (return_time() - (*philo)[i]->start_program_time), (*philo)[i]->index_philosophers);
+	check_end(count, philo, flag_die);
 	i = -1;
 	while (++i < count)
 	{

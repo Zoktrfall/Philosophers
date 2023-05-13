@@ -8,6 +8,7 @@
 # include <sys/time.h>
 # include <string.h>
 
+// Error Codes and Their Prints
 # define FINISH_PROGRAM 0
 # define MALLOC_ERROR 1
 # define THREAD_ERROR 2
@@ -16,6 +17,13 @@
 # define PRINT_THREAD_ERROR "Error creating thread\n"
 # define PRINT_JOIN_ERROR "Error in join\n"
 
+//  Prints
+# define PHILO_DIE "%lld %d died\n"
+# define PHILO_EAT "%lld %d is eating\n"
+# define PHILO_SLEEP "%lld %d is sleeping\n"
+# define PHILO_FORK "%lld %d has taken a fork\n"
+# define PHILO_THINK "%lld %d is thinking\n"
+
 typedef struct s_philo_data {
 	pthread_t		*thread_philo;
 	int				philosophers;
@@ -23,6 +31,7 @@ typedef struct s_philo_data {
 	long long		time_to_die;
 	long long		time_to_eat;
 	long long		time_to_sleep;
+	int				eat_count;
 	int				optional_argument;
 	pthread_mutex_t	*fork_right;
 	pthread_mutex_t	*fork_left;
@@ -46,6 +55,11 @@ int			init_pilo(t_philo_data ***philo, int mas[5], int i);
 int			init_options(t_philo_data ***philo, int count, int i);
 int			init_mutex(t_philo_data ***philo, \
 				pthread_mutex_t ***mutex, int count);
+
+//  Philo Utils
+int			death_check(t_philo_data *philo, int **flag_die);
+int			end_program(t_philo_data **philo, int count);
+void		check_end(int count, t_philo_data ***philo, int *flag_die);
 
 //  Utils
 void		*ft_calloc(size_t num, size_t size);

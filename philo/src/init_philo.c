@@ -22,6 +22,7 @@ int	init_pilo(t_philo_data ***philo, int mas[5], int i)
 		(*philo)[i]->fork_left = NULL;
 		(*philo)[i]->fork_right = NULL;
 		(*philo)[i]->time_philo = 0;
+		(*philo)[i]->eat_count = 0;
 		(*philo)[i]->start_program_time = start;
 		(*philo)[i]->ptr_philo_die = NULL;
 	}
