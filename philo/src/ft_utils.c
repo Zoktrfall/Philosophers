@@ -30,3 +30,18 @@ long long	return_time(void)
 	start_program = (time.tv_sec * 1000) + (time.tv_usec / 1000);
 	return (start_program);
 }
+
+void	ft_usleep(long long ms)
+{
+	struct timeval	now;
+	struct timeval	start;
+
+	gettimeofday(&now, NULL);
+	gettimeofday(&start, NULL);
+	while ((now.tv_sec - start.tv_sec) * 1000 + \
+		(now.tv_usec - start.tv_usec) / 1000 < ms)
+	{
+		usleep(10);
+		gettimeofday(&now, NULL);
+	}
+}

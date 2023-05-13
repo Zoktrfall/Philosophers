@@ -50,6 +50,7 @@ int			init_mutex(t_philo_data ***philo, \
 //  Utils
 void		*ft_calloc(size_t num, size_t size);
 long long	return_time(void);
+void		ft_usleep(long long ms);
 
 //	Free Functions
 void		free_philo(t_philo_data ***philo, int count);
