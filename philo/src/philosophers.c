@@ -20,6 +20,13 @@ void	*thread_philo(void	*philo_arg)
 		}
 		pthread_mutex_unlock(&operacion);
 		pthread_mutex_lock(philo->fork_left);
+		pthread_mutex_lock(&operacion);
+		if (*(philo->ptr_philo_die))
+		{
+			pthread_mutex_unlock(&operacion);
+			return NULL;
+		}
+		pthread_mutex_unlock(&operacion);
 		pthread_mutex_lock(philo->print_mutex);
 		printf(PHILO_FORK, (return_time() - philo->start_program_time), philo->index_philosophers);
 		pthread_mutex_unlock(philo->print_mutex);
@@ -31,12 +38,26 @@ void	*thread_philo(void	*philo_arg)
 		}
 		pthread_mutex_unlock(&operacion);
 		pthread_mutex_lock(philo->fork_right);
+		pthread_mutex_lock(&operacion);
+		if (*(philo->ptr_philo_die))
+		{
+			pthread_mutex_unlock(&operacion);
+			return NULL;
+		}
+		pthread_mutex_unlock(&operacion);
 		pthread_mutex_lock(philo->print_mutex);
 		printf(PHILO_FORK, (return_time() - philo->start_program_time), philo->index_philosophers);
 		pthread_mutex_unlock(philo->print_mutex);
 		pthread_mutex_lock(philo->time_philo_mutex);
 		philo->time_philo = return_time() - philo->start_program_time + philo->time_philo;
 		pthread_mutex_unlock(philo->time_philo_mutex);
+		pthread_mutex_lock(&operacion);
+		if (*(philo->ptr_philo_die))
+		{
+			pthread_mutex_unlock(&operacion);
+			return NULL;
+		}
+		pthread_mutex_unlock(&operacion);
 		pthread_mutex_lock(philo->print_mutex);
 		printf(PHILO_EAT, (return_time() - philo->start_program_time), philo->index_philosophers);
 		pthread_mutex_lock(&plus);
@@ -47,10 +68,24 @@ void	*thread_philo(void	*philo_arg)
 		ft_usleep(philo->time_to_eat);
 		pthread_mutex_unlock(philo->fork_right);
 		pthread_mutex_unlock(philo->fork_left);
+		pthread_mutex_lock(&operacion);
+		if (*(philo->ptr_philo_die))
+		{
+			pthread_mutex_unlock(&operacion);
+			return NULL;
+		}
+		pthread_mutex_unlock(&operacion);
 		pthread_mutex_lock(philo->print_mutex);
 		printf(PHILO_SLEEP, (return_time() - philo->start_program_time), philo->index_philosophers);
 		pthread_mutex_unlock(philo->print_mutex);
 		ft_usleep(philo->time_to_sleep);
+		pthread_mutex_lock(&operacion);
+		if (*(philo->ptr_philo_die))
+		{
+			pthread_mutex_unlock(&operacion);
+			return NULL;
+		}
+		pthread_mutex_unlock(&operacion);
 		pthread_mutex_lock(philo->print_mutex);
 		printf(PHILO_THINK, (return_time() - philo->start_program_time), philo->index_philosophers);
 		pthread_mutex_unlock(philo->print_mutex);
