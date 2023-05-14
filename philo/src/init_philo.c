@@ -79,3 +79,45 @@ int	init_mutex(t_philo_data ***philo, pthread_mutex_t ***mutex, int count)
 	}
 	return (init_threads(philo, count));
 }
+
+int	init_global_mutex(t_philo_data ***philo, int count, pthread_mutex_t *mas[5])
+{
+	int	i;
+
+	i = -1;
+	while (++i < 5)
+	{
+		mas[i] = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
+		if (mas[i] == NULL)
+			return (free_mutex_mas(mas, i));
+	}
+	i = -1;
+	while (++i < 5)
+		if (pthread_mutex_init(mas[i], NULL))
+			return (free_mutex_mas(mas, 4));
+	i = -1;
+	while (++i < count)
+	{
+		(*philo)[i]->check_die = mas[0];
+		(*philo)[i]->adding_eat = mas[1];
+		(*philo)[i]->print_mutex = mas[2];
+		(*philo)[i]->philo_die_mutex = mas[3];
+		(*philo)[i]->time_philo_mutex = mas[4];
+	}
+	return (0);
+}
+
+int	*init_flag_die(t_philo_data ***philo, int count)
+{
+	int	*flag_die;
+	int	i;
+
+	i = -1;
+	flag_die = (int *)malloc(sizeof(int));
+	if (flag_die == NULL)
+		return (NULL);
+	*flag_die = 0;
+	while (++i < count)
+		(*philo)[i]->ptr_philo_die = flag_die;
+	return (flag_die);
+}

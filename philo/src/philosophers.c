@@ -90,70 +90,15 @@ void	*thread_philo(void	*philo_arg)
 	return NULL;
 }
 
-int *init_flag_die(t_philo_data ***philo, int count)
-{
-	int	*flag_die;
-	int	i;
-
-	i = -1;
-	flag_die = (int *)malloc(sizeof(int));
-	if (flag_die == NULL)
-		return (NULL);
-	*flag_die = 0;
-	while (++i < count)
-		(*philo)[i]->ptr_philo_die = flag_die;
-	return (flag_die);
-}
-
-int	free_mutex_mas(pthread_mutex_t *mas[5], int end)
-{
-	int i;
-
-	i = -1;
-	while (++i <= end)
-	{
-		if (mas[i] == NULL)
-			break ;
-		free(mas[i]);
-	}
-	return (1);
-}
-
-int	init_global_mutex(t_philo_data ***philo, int count)
-{
-	int i;
-	pthread_mutex_t	*mas[5];
-
-	i = -1;
-	while (++i < 5)
-	{
-		mas[i] = (pthread_mutex_t *)ft_calloc(1, sizeof(pthread_mutex_t));
-		if (mas[i] == NULL)
-			return (free_mutex_mas(mas, i));
-	}
-	i = -1;
-	while (++i < 5)
-		if (pthread_mutex_init(mas[i], NULL))
-			return (free_mutex_mas(mas, 4));
-	i = -1;
-	while (++i < count)
-	{
-		(*philo)[i]->check_die = mas[0];
-		(*philo)[i]->adding_eat = mas[1];
-		(*philo)[i]->print_mutex = mas[2];
-		(*philo)[i]->philo_die_mutex = mas[3];
-		(*philo)[i]->time_philo_mutex = mas[4];
-	}
-	return (0);
-}
-
 int	respected_philosophers(t_philo_data ***philo, pthread_mutex_t ***mutex, int count, int i)
 {
-	int *flag_die;
+	int 			*flag_die;
+	pthread_mutex_t	*mas[5];
+
 	flag_die = init_flag_die(philo, count);
 	if (flag_die == NULL)
 		return (del_philosophers(philo, mutex, count, MALLOC_ERROR));
-	if (init_global_mutex(philo, count))
+	if (init_global_mutex(philo, count, mas))
 		return (del_philosophers(philo, mutex, count, MALLOC_ERROR));
 	while (++i < count)
 	{
@@ -168,7 +113,8 @@ int	respected_philosophers(t_philo_data ***philo, pthread_mutex_t ***mutex, int 
 		if (pthread_join(*(*philo)[i]->thread_philo, NULL))
 			return (del_philosophers(philo, mutex, count, THREAD_ERROR));
 	}
-	free_global(philo, NULL, NULL);
+	free_mutex_mas(mas, 4);
+	free(flag_die);
 	return (0);
 }
 

@@ -45,7 +45,7 @@ typedef struct s_philo_data {
 	pthread_mutex_t	*time_philo_mutex;
 }	t_philo_data;
 
-/* Global Mutex
+/*  'Global Mutexes'
 	pthread_mutex_t	*check_die;
 	pthread_mutex_t	*adding_eat;
 	pthread_mutex_t	*print_mutex;
@@ -59,9 +59,10 @@ int			fifth_arg(char *arg);
 long long	ft_atoi(const char *str);
 
 //	Init Philosophers
+int 		*init_flag_die(t_philo_data ***philo, int count);
 int			init_threads(t_philo_data ***philo, int count);
 int			init_pilo(t_philo_data ***philo, int mas[5], int i);
-int			init_global_mutex(t_philo_data ***philo, int count);
+int			init_global_mutex(t_philo_data ***philo, int count, pthread_mutex_t *mas[5]);
 int			init_mutex(t_philo_data ***philo, \
 				pthread_mutex_t ***mutex, int count);
 
@@ -76,10 +77,9 @@ long long	return_time(void);
 void		ft_usleep(long long ms);
 
 //	Free Functions
+int			free_mutex_mas(pthread_mutex_t *mas[5], int end);
 void		free_philo(t_philo_data ***philo, int count);
 void		free_mutex(pthread_mutex_t ***mutex, int count);
-int			free_global(t_philo_data ***philo, \
-				pthread_mutex_t *str, pthread_mutex_t *ptr);
 int			del_philosophers(t_philo_data ***philo, \
 				pthread_mutex_t ***mutex, int mas_0, int end_program);
 

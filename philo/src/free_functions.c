@@ -48,24 +48,16 @@ int	del_philosophers(t_philo_data ***philo, \
 	return (0);
 }
 
-int	free_global(t_philo_data ***philo, \
-	pthread_mutex_t *str, pthread_mutex_t *ptr)
+int	free_mutex_mas(pthread_mutex_t *mas[5], int end)
 {
-	if (philo == NULL)
+	int	i;
+
+	i = -1;
+	while (++i <= end)
 	{
-		if (str != NULL)
-			pthread_mutex_destroy(str);
-		if (ptr != NULL)
-			pthread_mutex_destroy(ptr);
-		free(str);
-		free(ptr);
-		return (1);
+		if (mas[i] == NULL)
+			break ;
+		free(mas[i]);
 	}
-	if ((*philo)[0]->philo_die_mutex != NULL)
-		pthread_mutex_destroy((*philo)[0]->philo_die_mutex);
-	if ((*philo)[0]->print_mutex != NULL)
-		pthread_mutex_destroy((*philo)[0]->print_mutex);
-	free((*philo)[0]->philo_die_mutex);
-	free((*philo)[0]->print_mutex);
 	return (1);
 }
