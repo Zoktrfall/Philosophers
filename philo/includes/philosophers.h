@@ -38,10 +38,19 @@ typedef struct s_philo_data {
 	long long		time_philo;
 	long long		start_program_time;
 	int				*ptr_philo_die;
+	pthread_mutex_t	*check_die;
+	pthread_mutex_t	*adding_eat;
 	pthread_mutex_t	*print_mutex;
 	pthread_mutex_t	*philo_die_mutex;
 	pthread_mutex_t	*time_philo_mutex;
 }	t_philo_data;
+
+/* Global Mutex
+	pthread_mutex_t	*check_die;
+	pthread_mutex_t	*adding_eat;
+	pthread_mutex_t	*print_mutex;
+	pthread_mutex_t	*philo_die_mutex;
+	pthread_mutex_t	*time_philo_mutex; */
 
 //  Correct Args
 int			correct_args(int argc, char **argv, int mas[5]);
@@ -52,7 +61,7 @@ long long	ft_atoi(const char *str);
 //	Init Philosophers
 int			init_threads(t_philo_data ***philo, int count);
 int			init_pilo(t_philo_data ***philo, int mas[5], int i);
-int			init_options(t_philo_data ***philo, int count, int i);
+int			init_global_mutex(t_philo_data ***philo, int count);
 int			init_mutex(t_philo_data ***philo, \
 				pthread_mutex_t ***mutex, int count);
 
