@@ -43,8 +43,6 @@ int	del_philosophers(t_philo_data ***philo, \
 		return (printf(PRINT_MALLOC_ERROR));
 	if (end_program == THREAD_ERROR)
 		return (printf(PRINT_THREAD_ERROR));
-	if (end_program == JOIN_ERROR)
-		return (printf(PRINT_JOIN_ERROR));
 	return (0);
 }
 
@@ -60,4 +58,10 @@ int	free_mutex_mas(pthread_mutex_t *mas[5], int end)
 		free(mas[i]);
 	}
 	return (1);
+}
+
+int	free_return(int **flag_die, int value)
+{
+	free(*flag_die);
+	return (value);
 }

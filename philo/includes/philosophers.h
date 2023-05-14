@@ -12,10 +12,8 @@
 # define FINISH_PROGRAM 0
 # define MALLOC_ERROR 1
 # define THREAD_ERROR 2
-# define JOIN_ERROR 3
 # define PRINT_MALLOC_ERROR "Malloc error\n"
-# define PRINT_THREAD_ERROR "Error creating thread\n"
-# define PRINT_JOIN_ERROR "Error in join\n"
+# define PRINT_THREAD_ERROR "Error when creating or joining a thread\n"
 
 //  Prints
 # define PHILO_DIE "%lld %d died\n"
@@ -59,10 +57,11 @@ int			fifth_arg(char *arg);
 long long	ft_atoi(const char *str);
 
 //	Init Philosophers
-int 		*init_flag_die(t_philo_data ***philo, int count);
+int			*init_flag_die(t_philo_data ***philo, int count);
 int			init_threads(t_philo_data ***philo, int count);
 int			init_pilo(t_philo_data ***philo, int mas[5], int i);
-int			init_global_mutex(t_philo_data ***philo, int count, pthread_mutex_t *mas[5]);
+int			init_global_mutex(t_philo_data ***philo, \
+				int count, pthread_mutex_t *mas[5]);
 int			init_mutex(t_philo_data ***philo, \
 				pthread_mutex_t ***mutex, int count);
 
@@ -79,6 +78,7 @@ void		ft_usleep(long long ms);
 //	Free Functions
 int			free_mutex_mas(pthread_mutex_t *mas[5], int end);
 void		free_philo(t_philo_data ***philo, int count);
+int			free_return(int **flag_die, int value);
 void		free_mutex(pthread_mutex_t ***mutex, int count);
 int			del_philosophers(t_philo_data ***philo, \
 				pthread_mutex_t ***mutex, int mas_0, int end_program);
