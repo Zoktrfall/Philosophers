@@ -22,6 +22,12 @@
 # define PHILO_FORK "%lld %d has taken a fork\n"
 # define PHILO_THINK "%lld %d is thinking\n"
 
+//  Flags for the Print Function
+# define EAT 1
+# define SLEEP 2
+# define THINK 3
+# define FORK 4
+
 typedef struct s_philo_data {
 	pthread_t		*thread_philo;
 	int				philosophers;
@@ -65,7 +71,15 @@ int			init_global_mutex(t_philo_data ***philo, \
 int			init_mutex(t_philo_data ***philo, \
 				pthread_mutex_t ***mutex, int count);
 
+//  Thread_philo
+int			take_fork(t_philo_data *philo);
+int			eat_sleep_think(t_philo_data *philo);
+void		*thread_philo(void	*philo_arg);
+int			respected_philosophers(t_philo_data ***philo, \
+			pthread_mutex_t ***mutex, int count, pthread_mutex_t *global[5]);
+
 //  Philo Utils
+void		print_philo_action(t_philo_data *philo, int flag);
 int			death_check(t_philo_data *philo, int **flag_die);
 int			end_program(t_philo_data **philo, int count);
 void		check_end(int count, t_philo_data ***philo, int *flag_die);
