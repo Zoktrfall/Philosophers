@@ -32,9 +32,9 @@ typedef struct s_philo_data {
 	pthread_t		*thread_philo;
 	int				philosophers;
 	int				index_philosophers;
-	long long		time_to_die;
-	long long		time_to_eat;
-	long long		time_to_sleep;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
 	int				eat_count;
 	int				optional_argument;
 	pthread_mutex_t	*fork_right;
