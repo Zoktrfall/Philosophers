@@ -1,4 +1,4 @@
-#include "philosophers.h"
+#include "philosophers_bonus.h"
 
 int	init_pilo(t_philo_data ***philo, int mas[5], int i)
 {

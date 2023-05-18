@@ -4,7 +4,7 @@ FLAGS = -Wall -Wextra -Werror #-g -fsanitize=thread
 LIBS = -I./includes/
 CC = cc
 RM = rm -rf
-PHILOSOPHERS = ./includes/philosophers.h
+PHILOSOPHERS = ./includes/philosophers_bonus.h
 
 # Directories
 SRC_DIR = src

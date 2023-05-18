@@ -1,4 +1,4 @@
-#include "philosophers.h"
+#include "philosophers_bonus.h"
 
 void	*ft_calloc(size_t num, size_t size)
 {
