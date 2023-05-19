@@ -1,6 +1,6 @@
 # Main Variables
 NAME = philo_bonus
-FLAGS = -Wall -Wextra -Werror #-g -fsanitize=thread
+FLAGS = -Wall -Wextra -Werror
 LIBS = -I./includes/
 CC = cc
 RM = rm -rf

@@ -34,6 +34,7 @@ int	init_sem(t_philo_data ***philo, int count)
 	sem_t	*end_s;
 
 	i = -1;
+	unlink_sem(print_s, end_s, forks_s);
 	print_s = sem_open("/my_semaphore", \
 		O_CREAT, S_IRUSR | S_IWUSR | S_IRGRP, 1);
 	end_s = sem_open("/my_semaphore2", \

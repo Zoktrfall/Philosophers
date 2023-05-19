@@ -28,6 +28,7 @@
 # define SLEEP 2
 # define THINK 3
 # define FORK 4
+# define DIE 5
 
 typedef struct s_philo_data {
 	sem_t			*forks;
