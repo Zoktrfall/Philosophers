@@ -10,6 +10,11 @@
 # include <string.h>
 # include <semaphore.h>
 
+// Error Codes and Their Prints
+# define FINISH_PROGRAM 0
+# define MALLOC_ERROR 1
+# define PRINT_MALLOC_ERROR "Malloc error or Semaphore error\n"
+
 //  Prints
 # define PHILO_DIE "%lld %d died\n"
 # define PHILO_EAT "%lld %d is eating\n"
@@ -30,9 +35,9 @@ typedef struct s_philo_data {
 	pid_t			process_philo;
 	int				philosophers;
 	int				index_philosophers;
-	int     		time_to_die;
-	int		        time_to_eat;
-	int     		time_to_sleep;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
 	int				eat_count;
 	int				optional_argument;
 	long long		time_philo;
@@ -46,11 +51,18 @@ int			fifth_arg(char *arg);
 long long	ft_atoi(const char *str);
 
 //	Init Philosophers
-int	init_pilo(t_philo_data ***philo, int mas[5], int i);
+int			init_pilo(t_philo_data ***philo, int mas[5], int i);
+int			init_sem(t_philo_data ***philo, int count);
 
 //  Utils
 void		*ft_calloc(size_t num, size_t size);
 long long	return_time(void);
 void		ft_usleep(long long ms);
+
+//	Free Functions
+void		free_philo(t_philo_data ***philo, int count);
+int			del_philosophers(t_philo_data ***philo,
+				int mas_0, int end_program);
+int			unlink_sem(sem_t *print_s, sem_t *end_s, sem_t *forks_s);
 
 #endif
