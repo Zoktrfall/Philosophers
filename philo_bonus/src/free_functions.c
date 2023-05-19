@@ -19,9 +19,9 @@ void	free_philo(t_philo_data ***philo, int count)
 int	del_philosophers(t_philo_data ***philo,
 	int mas_0, int end_program)
 {
+	unlink_sem((*philo)[0]->print_sem, (*philo)[0]->check_end, \
+		(*philo)[0]->forks);
 	free_philo(philo, mas_0);
-	if (end_program == MALLOC_ERROR)
-		return (printf(PRINT_MALLOC_ERROR));
 	return (0);
 }
 

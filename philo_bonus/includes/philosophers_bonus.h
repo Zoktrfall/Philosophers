@@ -8,12 +8,13 @@
 # include <sys/time.h>
 # include <sys/stat.h>
 # include <string.h>
+# include <signal.h>
 # include <semaphore.h>
 
 // Error Codes and Their Prints
 # define FINISH_PROGRAM 0
-# define MALLOC_ERROR 1
 # define PRINT_MALLOC_ERROR "Malloc error or Semaphore error\n"
+# define PRINT_PROCESS_ERROR "Process Creation error\n"
 
 //  Prints
 # define PHILO_DIE "%lld %d died\n"
