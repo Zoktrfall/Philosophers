@@ -75,13 +75,13 @@ void	start_philo(t_philo_data *philo)
 void	*check_eat(void *ph)
 {
 	int				i;
-	t_philo_data	*philo;
+	t_philo_data	**philo;
 
 	philo = ph;
 	i = -1;
-	while (++i < philo->philosophers)
-		waitpid(philo->process_philo, NULL, 0);
-	sem_post(philo->check_end);
+	while (++i < (philo)[0]->philosophers)
+		waitpid((philo)[i]->process_philo, NULL, 0);
+	sem_post(philo[0]->check_end);
 	return (NULL);
 }
 
@@ -105,12 +105,13 @@ void	respected_philosophers(t_philo_data ***philo, int count)
 		}
 	}
 	sem_wait((*philo)[0]->check_end);
-	pthread_create(thread, NULL, check_eat, philo);
+	pthread_create(thread, NULL, check_eat, (*philo));
 		// write(1, "helav\n", 6);
 	
 	sem_wait((*philo)[0]->check_end);
 	write(1, "helav\n", 6);
 	pthread_detach(*thread);
+	free(thread);
 	i = -1;
 	while (++i < (*philo)[0]->philosophers)
 		kill((*philo)[i]->process_philo, SIGTERM);
@@ -128,5 +129,6 @@ int main(int argc, char *argv[])
 		exit(printf(PRINT_MALLOC_ERROR));
 	respected_philosophers(&philo, mas[0]);
 	del_philosophers(&philo, mas[0], FINISH_PROGRAM);
+	system("leaks philo_bonus");
 	return (0);
 }
