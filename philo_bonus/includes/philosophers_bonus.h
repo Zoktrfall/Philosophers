@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philosophers_bonus.h                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aafrikya <aafrikya@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/05/20 20:58:14 by aafrikya          #+#    #+#             */
+/*   Updated: 2023/05/20 20:58:15 by aafrikya         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILOSOPHERS_BONUS_H
 # define PHILOSOPHERS_BONUS_H
 
@@ -57,10 +69,17 @@ long long	ft_atoi(const char *str);
 int			init_pilo(t_philo_data ***philo, int mas[5], int i);
 int			init_sem(t_philo_data ***philo, int count);
 
+//	Process_Philo
+void		respected_philosophers(t_philo_data ***philo, int count);
+void		start_philo(t_philo_data *philo);
+void		eat_sleep_think(t_philo_data *philo);
+
 //  Philo Utils
 void		print_philo_action(t_philo_data *philo, int flag);
-int			death_check(t_philo_data *philo);
+int			death_check(t_philo_data *philo, int flag);
 void		*check_eat(void *ph);
+void		finish_program(t_philo_data ***philo, \
+				int count, pthread_t	*thread);
 
 //  Utils
 void		*ft_calloc(size_t num, size_t size);
