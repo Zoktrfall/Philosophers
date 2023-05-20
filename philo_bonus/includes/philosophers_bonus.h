@@ -15,6 +15,7 @@
 # define FINISH_PROGRAM 0
 # define PRINT_MALLOC_ERROR "Malloc error or Semaphore error\n"
 # define PRINT_PROCESS_ERROR "Process Creation error\n"
+# define PRINT_THREAD_ERROR "Error when creating or detach a thread\n"
 
 //  Prints
 # define PHILO_DIE "%lld %d died\n"
@@ -55,6 +56,11 @@ long long	ft_atoi(const char *str);
 //	Init Philosophers
 int			init_pilo(t_philo_data ***philo, int mas[5], int i);
 int			init_sem(t_philo_data ***philo, int count);
+
+//  Philo Utils
+void		print_philo_action(t_philo_data *philo, int flag);
+int			death_check(t_philo_data *philo);
+void		*check_eat(void *ph);
 
 //  Utils
 void		*ft_calloc(size_t num, size_t size);

@@ -1,37 +1,5 @@
 #include "philosophers_bonus.h"
 
-void	print_philo_action(t_philo_data *philo, int flag)
-{
-	sem_wait(philo->print_sem);
-	if (flag == FORK)
-		printf(PHILO_FORK, (return_time() - \
-			philo->start_program_time), philo->index_philosophers);
-	if (flag == EAT)
-		printf(PHILO_EAT, (return_time() - \
-			philo->start_program_time), philo->index_philosophers);
-	if (flag == THINK)
-		printf(PHILO_THINK, (return_time() - \
-			philo->start_program_time), philo->index_philosophers);
-	if (flag == SLEEP)
-		printf(PHILO_SLEEP, (return_time() - \
-			philo->start_program_time), philo->index_philosophers);
-	if (flag == DIE)
-	{
-		printf(PHILO_DIE, (return_time() - \
-			philo->start_program_time), philo->index_philosophers);
-		return ;
-	}
-	sem_post(philo->print_sem);
-}
-
-int	death_check(t_philo_data *philo)
-{
-	if ((return_time() - philo->start_program_time \
-		- philo->time_philo) > philo->time_to_die)
-		return (1);
-	return (0);
-}
-
 void	start_philo(t_philo_data *philo)
 {
 	while (philo->eat_count != philo->optional_argument)
@@ -72,25 +40,31 @@ void	start_philo(t_philo_data *philo)
 	}
 }
 
-void	*check_eat(void *ph)
+void	finish_program(t_philo_data ***philo, int count, pthread_t	*thread)
 {
-	int				i;
-	t_philo_data	**philo;
+	int	i;
 
-	philo = ph;
 	i = -1;
-	while (++i < (philo)[0]->philosophers)
-		waitpid((philo)[i]->process_philo, NULL, 0);
-	sem_post(philo[0]->check_end);
-	return (NULL);
+	sem_wait((*philo)[0]->check_end);
+	if (pthread_create(thread, NULL, check_eat, (*philo)))
+		exit(printf(PRINT_THREAD_ERROR));
+	sem_wait((*philo)[0]->check_end);
+	if (pthread_detach(*thread))
+		exit(printf(PRINT_THREAD_ERROR));
+	while (++i < (*philo)[0]->philosophers)
+		kill((*philo)[i]->process_philo, SIGTERM);
+	ft_usleep(100);
 }
 
 void	respected_philosophers(t_philo_data ***philo, int count)
 {
-	int	i;
-	pthread_t	*thread = malloc(sizeof(pthread_t));
+	int			i;
+	pthread_t	*thread;
 
 	i = -1;
+	thread = malloc(sizeof(pthread_t));
+	if (thread == NULL)
+		exit(printf(PRINT_MALLOC_ERROR));
 	while (++i < count)
 	{
 		(*philo)[i]->process_philo = fork();
@@ -104,21 +78,11 @@ void	respected_philosophers(t_philo_data ***philo, int count)
 			exit(0);
 		}
 	}
-	sem_wait((*philo)[0]->check_end);
-	pthread_create(thread, NULL, check_eat, (*philo));
-		// write(1, "helav\n", 6);
-	
-	sem_wait((*philo)[0]->check_end);
-	write(1, "helav\n", 6);
-	pthread_detach(*thread);
+	finish_program(philo, count, thread);
 	free(thread);
-	i = -1;
-	while (++i < (*philo)[0]->philosophers)
-		kill((*philo)[i]->process_philo, SIGTERM);
-	printf("end program\n");
 }
 
-int main(int argc, char *argv[])
+int	main(int argc, char *argv[])
 {
 	t_philo_data	**philo;
 	int				mas[5];
@@ -129,6 +93,6 @@ int main(int argc, char *argv[])
 		exit(printf(PRINT_MALLOC_ERROR));
 	respected_philosophers(&philo, mas[0]);
 	del_philosophers(&philo, mas[0], FINISH_PROGRAM);
-	system("leaks philo_bonus");
+	// system("leaks philo_bonus");
 	return (0);
 }
